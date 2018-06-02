@@ -34,6 +34,11 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+	if "!setUsername=" in message.content:
+		uname = message.content.replace("!setUsername=", "")
+		await client.edit_profile(username=uname)
+		await client.send_message(message.channel, "New username set: {}".format(uname))
+		print("New username set: {}".format(uname))	
 	if message.author.name == client.user.name:
 		pass # Stop replying to itself
 	elif message.attachments:
@@ -63,7 +68,7 @@ async def on_message(message):
 			text_img = text_img[y1:y2, x1:x2]
 			text_img = binarize_array(text_img)
 			msg = pytesseract.image_to_string(text_img)
-			await client.edit_message(tmp, "https://www.google.com/maps/dir/?api=1&destination="+urllib.parse.quote(msg))
+			await client.edit_message(tmp, "Found {}\nhttps://www.google.com/maps/dir/?api=1&destination={}\nWARNING: Google maps locations are likely not accurate".format(msg, urllib.parse.quote(msg)))
 			if "!debug" in message.content:
 				circle_disp = img.copy()
 				for (x, y, r) in np.round(circles[0, :]).astype("int"):
